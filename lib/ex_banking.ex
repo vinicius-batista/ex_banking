@@ -28,8 +28,8 @@ defmodule ExBanking do
   @spec deposit(user :: String.t(), amount :: number, currency :: String.t()) ::
           {:ok, new_balance :: number} | banking_error
   def deposit(user, amount, currency)
-      when is_binary(user) and is_number(amount) and is_binary(currency) do
-    {:ok, 0}
+      when is_binary(user) and is_number(amount) and amount > 0 and is_binary(currency) do
+    UserAccount.deposit(user, amount, currency)
   end
 
   def deposit(_, _, _) do
