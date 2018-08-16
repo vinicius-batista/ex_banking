@@ -17,4 +17,9 @@ defmodule ExBanking.Helpers do
 
   defp has_more_than_10_requests(len) when len > 10, do: {:error, :too_many_requests_to_user}
   defp has_more_than_10_requests(len), do: {:ok, len}
+
+  def format_money(money) do
+    money
+    |> Float.round(2)
+  end
 end

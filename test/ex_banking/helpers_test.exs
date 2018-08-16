@@ -20,10 +20,14 @@ defmodule ExBanking.HelpersTest do
 
     tasks =
       Enum.map(1..300, fn _ ->
-        Task.async(fn -> UserAccount.deposit("vinicius_123", 100, "dollar") end)
+        Task.async(fn -> UserAccount.deposit("vinicius_123", 100.00, "dollar") end)
       end)
       |> Enum.map(&Task.await/1)
 
     assert Enum.member?(tasks, {:error, :too_many_requests_to_user}) == true
+  end
+
+  test "format money should return a number with two decimals" do
+    assert Helpers.format_money(10.00) == 10.00
   end
 end
