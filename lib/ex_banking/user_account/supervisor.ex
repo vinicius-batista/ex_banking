@@ -4,6 +4,7 @@ defmodule ExBanking.UserAccount.Supervisor do
   """
 
   use DynamicSupervisor
+  alias ExBanking.UserAccount.Server
 
   @me __MODULE__
 
@@ -13,5 +14,9 @@ defmodule ExBanking.UserAccount.Supervisor do
 
   def init(:no_args) do
     DynamicSupervisor.init(strategy: :one_for_one)
+  end
+
+  def add_server(user) do
+    DynamicSupervisor.start_child(@me, {Server, user})
   end
 end

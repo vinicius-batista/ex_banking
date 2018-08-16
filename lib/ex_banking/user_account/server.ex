@@ -4,7 +4,11 @@ defmodule ExBanking.UserAccount.Server do
   """
   use GenServer
 
-  def init(user_name) do
-    {:ok, {user_name, 0}}
+  def start_link(user) do
+    GenServer.start_link(__MODULE__, %{}, name: {:global, user})
+  end
+
+  def init(state) do
+    {:ok, state}
   end
 end
