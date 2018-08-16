@@ -14,7 +14,8 @@ defmodule ExBanking.UserAccount do
 
   def deposit(user, amount, currency) do
     with pid <- Helpers.get_user_pid(user),
-         true <- Helpers.user_exists?(pid) do
+         true <- Helpers.user_exists?(pid),
+         {:ok, _} <- Helpers.check_too_many_requests(pid) do
       GenServer.call(pid, {:deposit, amount, currency})
     end
   end
