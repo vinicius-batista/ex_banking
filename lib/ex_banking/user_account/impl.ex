@@ -10,7 +10,7 @@ defmodule ExBanking.UserAccount.Impl do
   end
 
   def withdraw(amount, currency, users_balance) do
-    currency_amount = Map.get(users_balance, currency, 0.00)
+    currency_amount = get_amount(users_balance, currency)
 
     case currency_amount - amount do
       result when result < 0 ->
@@ -21,5 +21,9 @@ defmodule ExBanking.UserAccount.Impl do
           _ -> result
         end)
     end
+  end
+
+  def get_amount(users_balance, currency) do
+    Map.get(users_balance, currency, 0.00)
   end
 end

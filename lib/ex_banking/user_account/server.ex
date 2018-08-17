@@ -16,7 +16,7 @@ defmodule ExBanking.UserAccount.Server do
 
   def handle_call({:deposit, amount, currency}, _from, users_balance) do
     with new_users_balance <- Impl.deposit(amount, currency, users_balance),
-         new_currency_amount <- Map.get(new_users_balance, currency) do
+         new_currency_amount <- Impl.get_amount(new_users_balance, currency) do
       {:reply, {:ok, new_currency_amount}, new_users_balance}
     end
   end
@@ -24,10 +24,15 @@ defmodule ExBanking.UserAccount.Server do
   def handle_call({:withdraw, amount, currency}, _from, users_balance) do
     with new_users_balance when is_map(new_users_balance) <-
            Impl.withdraw(amount, currency, users_balance),
-         new_currency_amount <- Map.get(new_users_balance, currency) do
+         new_currency_amount <- Impl.get_amount(new_users_balance, currency) do
       {:reply, {:ok, new_currency_amount}, new_users_balance}
     else
       error -> {:reply, error, users_balance}
     end
+  end
+
+  def handle_call({:get_balance, currency}, _from, users_balance) do
+    amount = Impl.get_amount(users_balance, currency)
+    {:reply, {:ok, amount}, users_balance}
   end
 end

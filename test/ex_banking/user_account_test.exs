@@ -5,13 +5,15 @@ defmodule ExBanking.UserAccountTest do
   use ExUnit.Case
   alias ExBanking.UserAccount
   doctest UserAccount
+  @valid_user "ronaldo"
+  @invalid_user "random_guy"
 
   setup_all do
-    UserAccount.create_user("ronaldo")
+    UserAccount.create_user(@valid_user)
   end
 
   test "create user that already existis should return an error" do
-    assert UserAccount.create_user("ronaldo") == {:error, :user_already_exists}
+    assert UserAccount.create_user(@valid_user) == {:error, :user_already_exists}
   end
 
   test "create user should return ok" do
@@ -19,24 +21,32 @@ defmodule ExBanking.UserAccountTest do
   end
 
   test "Deposit an amount to an exists user" do
-    assert UserAccount.deposit("ronaldo", 10.00, "dolar") == {:ok, 10.00}
+    {:ok, amount} = UserAccount.deposit(@valid_user, 10.00, "dolar")
+    assert amount >= 10.00
   end
 
   test "Deposit an amount to a not exists user" do
-    assert UserAccount.deposit("random_guy", 10.00, "dolar") == {:error, :user_does_not_exist}
+    assert UserAccount.deposit(@invalid_user, 10.00, "dolar") == {:error, :user_does_not_exist}
   end
 
   test "Withdraw an amount to an exists user" do
-    UserAccount.deposit("ronaldo", 10.00, "dolar")
-    {:ok, amount} = UserAccount.withdraw("ronaldo", 10.00, "dolar")
+    UserAccount.deposit(@valid_user, 10.00, "dolar")
+    {:ok, amount} = UserAccount.withdraw(@valid_user, 10.00, "dolar")
     assert amount >= 0.00
   end
 
   test "Withdraw an amount to a not exists user" do
-    assert UserAccount.withdraw("random_guy", 10.00, "dolar") == {:error, :user_does_not_exist}
+    assert UserAccount.withdraw(@invalid_user, 10.00, "dolar") == {:error, :user_does_not_exist}
   end
 
   test "Withdraw an amount that not exists should return an error" do
-    assert UserAccount.withdraw("ronaldo", 150.00, "dolar") == {:error, :not_enough_money}
+    assert UserAccount.withdraw(@valid_user, 150.00, "dolar") == {:error, :not_enough_money}
+  end
+
+  test "Get balance from an user" do
+    user = @valid_user
+    UserAccount.deposit(user, 10.00, "dolar")
+    {:ok, amount} = UserAccount.get_balance(user, "dolar")
+    assert amount >= 10.00
   end
 end

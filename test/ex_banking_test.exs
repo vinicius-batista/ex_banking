@@ -18,4 +18,8 @@ defmodule ExBankingTest do
   test "pass wrong arguments to withdraw should return error" do
     assert ExBanking.withdraw(123, 123, 123) == @wrong_argument_error
   end
+
+  test "pass wrong arguments to get_balance should return error" do
+    assert ExBanking.get_balance(123, 123) == @wrong_argument_error
+  end
 end

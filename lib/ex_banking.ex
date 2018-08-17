@@ -40,7 +40,7 @@ defmodule ExBanking do
           {:ok, new_balance :: number} | banking_error
   def withdraw(user, amount, currency)
       when is_binary(user) and is_number(amount) and amount > 0 and is_binary(currency) do
-    {:ok, 0}
+    UserAccount.withdraw(user, amount, currency)
   end
 
   def withdraw(_, _, _) do
@@ -49,8 +49,12 @@ defmodule ExBanking do
 
   @spec get_balance(user :: String.t(), currency :: String.t()) ::
           {:ok, balance :: number} | banking_error
-  def get_balance(_user, _currency) do
-    {:ok, 0}
+  def get_balance(user, currency) when is_binary(user) and is_binary(currency) do
+    UserAccount.get_balance(user, currency)
+  end
+
+  def get_balance(_, _) do
+    {:error, :wrong_arguments}
   end
 
   @spec send(

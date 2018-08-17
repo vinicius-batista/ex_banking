@@ -13,19 +13,22 @@ defmodule ExBanking.UserAccount do
   end
 
   def deposit(user, amount, currency) do
-    with pid <- Helpers.get_user_pid(user),
-         true <- Helpers.user_exists?(pid),
-         {:ok, _} <- Helpers.check_too_many_requests(pid) do
-      GenServer.call(pid, {:deposit, amount, currency})
-      |> Helpers.format_response()
-    end
+    check_and_call_server(user, &GenServer.call(&1, {:deposit, amount, currency}))
   end
 
   def withdraw(user, amount, currency) do
+    check_and_call_server(user, &GenServer.call(&1, {:withdraw, amount, currency}))
+  end
+
+  def get_balance(user, currency) do
+    check_and_call_server(user, &GenServer.call(&1, {:get_balance, currency}))
+  end
+
+  defp check_and_call_server(user, fun) do
     with pid <- Helpers.get_user_pid(user),
          true <- Helpers.user_exists?(pid),
          {:ok, _} <- Helpers.check_too_many_requests(pid) do
-      GenServer.call(pid, {:withdraw, amount, currency})
+      fun.(pid)
       |> Helpers.format_response()
     end
   end
