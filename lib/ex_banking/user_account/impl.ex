@@ -8,4 +8,18 @@ defmodule ExBanking.UserAccount.Impl do
       currency_amount -> currency_amount + amount
     end)
   end
+
+  def withdraw(amount, currency, users_balance) do
+    currency_amount = Map.get(users_balance, currency, 0.00)
+
+    case currency_amount - amount do
+      result when result < 0 ->
+        :not_enough_money
+
+      result ->
+        Map.update(users_balance, currency, amount, fn
+          _ -> result
+        end)
+    end
+  end
 end
