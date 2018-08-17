@@ -22,4 +22,11 @@ defmodule ExBanking.Helpers do
     money
     |> Float.round(2)
   end
+
+  def format_response({:ok, amount}) do
+    formated_amount = format_money(amount)
+    {:ok, formated_amount}
+  end
+
+  def format_response(error_message), do: {:error, error_message}
 end
