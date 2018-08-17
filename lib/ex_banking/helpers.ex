@@ -29,4 +29,22 @@ defmodule ExBanking.Helpers do
   end
 
   def format_response(error_message), do: {:error, error_message}
+
+  def format_messages({:error, :user_does_not_exist}, :sender) do
+    {:error, :sender_does_not_exist}
+  end
+
+  def format_messages({:error, :too_many_requests_to_user}, :sender) do
+    {:error, :too_many_requests_to_sender}
+  end
+
+  def format_messages({:error, :user_does_not_exist}, :receiver) do
+    {:error, :receiver_does_not_exist}
+  end
+
+  def format_messages({:error, :too_many_requests_to_user}, :receiver) do
+    {:error, :too_many_requests_to_receiver}
+  end
+
+  def format_messages(pid, _), do: pid
 end

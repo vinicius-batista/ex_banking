@@ -6,10 +6,12 @@ defmodule ExBanking.UserAccountTest do
   alias ExBanking.UserAccount
   doctest UserAccount
   @valid_user "ronaldo"
+  @valid_user_2 "ronaldo_2"
   @invalid_user "random_guy"
 
   setup_all do
     UserAccount.create_user(@valid_user)
+    UserAccount.create_user(@valid_user_2)
   end
 
   test "create user that already existis should return an error" do
@@ -44,9 +46,26 @@ defmodule ExBanking.UserAccountTest do
   end
 
   test "Get balance from an user" do
-    user = @valid_user
-    UserAccount.deposit(user, 10.00, "dolar")
-    {:ok, amount} = UserAccount.get_balance(user, "dolar")
+    UserAccount.deposit(@valid_user, 10.00, "dolar")
+    {:ok, amount} = UserAccount.get_balance(@valid_user, "dolar")
     assert amount >= 10.00
+  end
+
+  test "send should return errors with invalid users" do
+    assert UserAccount.send(@valid_user, @invalid_user, 10.00, "dolar") ==
+             {:error, :receiver_does_not_exist}
+
+    assert UserAccount.send(@invalid_user, @valid_user, 10.00, "dolar") ==
+             {:error, :sender_does_not_exist}
+  end
+
+  test "send should work correctly" do
+    UserAccount.deposit(@valid_user, 13.00, "dolar")
+
+    {:ok, from_user_amount, to_user_amount} =
+      UserAccount.send(@valid_user, @valid_user_2, 13.00, "dolar")
+
+    assert to_user_amount == 13.00
+    assert from_user_amount != 13.00
   end
 end

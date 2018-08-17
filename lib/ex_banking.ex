@@ -60,7 +60,7 @@ defmodule ExBanking do
   def send(from_user, to_user, amount, currency)
       when is_binary(from_user) and is_binary(to_user) and is_float(amount) and amount > 0 and
              is_binary(currency) do
-    {:ok, 0, 0}
+    UserAccount.send(from_user, to_user, amount, currency)
   end
 
   def send(_, _, _, _), do: @wrong_arguments_error
