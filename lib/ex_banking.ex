@@ -28,7 +28,7 @@ defmodule ExBanking do
   @spec deposit(user :: String.t(), amount :: number, currency :: String.t()) ::
           {:ok, new_balance :: number} | banking_error
   def deposit(user, amount, currency)
-      when is_binary(user) and is_number(amount) and amount > 0 and is_binary(currency) do
+      when is_binary(user) and is_float(amount) and amount > 0 and is_binary(currency) do
     UserAccount.deposit(user, amount, currency)
   end
 
@@ -39,7 +39,7 @@ defmodule ExBanking do
   @spec withdraw(user :: String.t(), amount :: number, currency :: String.t()) ::
           {:ok, new_balance :: number} | banking_error
   def withdraw(user, amount, currency)
-      when is_binary(user) and is_number(amount) and amount > 0 and is_binary(currency) do
+      when is_binary(user) and is_float(amount) and amount > 0 and is_binary(currency) do
     UserAccount.withdraw(user, amount, currency)
   end
 
