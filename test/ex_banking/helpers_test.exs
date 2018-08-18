@@ -19,7 +19,8 @@ defmodule ExBanking.HelpersTest do
     assert status == :ok
 
     tasks =
-      Enum.map(1..300, fn _ ->
+      1..300
+      |> Enum.map(fn _ ->
         Task.async(fn -> UserAccount.deposit("vinicius_123", 100.00, "dollar") end)
       end)
       |> Enum.map(&Task.await/1)

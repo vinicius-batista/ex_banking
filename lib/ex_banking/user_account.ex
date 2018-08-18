@@ -35,7 +35,8 @@ defmodule ExBanking.UserAccount do
 
   defp check_and_call_server(user, fun) do
     with pid when is_pid(pid) <- all_checks(user) do
-      fun.(pid)
+      pid
+      |> fun.()
       |> Helpers.format_response()
     end
   end
