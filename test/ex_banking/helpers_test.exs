@@ -3,6 +3,7 @@ defmodule ExBanking.HelpersTest do
   Tests for Helpers
   """
   use ExUnit.Case
+  use ExUnitProperties
   alias ExBanking.{Helpers, UserAccount}
 
   setup_all do
@@ -28,7 +29,11 @@ defmodule ExBanking.HelpersTest do
     assert Enum.member?(tasks, {:error, :too_many_requests_to_user}) == true
   end
 
-  test "format money should return a number with two decimals" do
-    assert Helpers.format_money(10.00) == 10.00
+  describe "format money" do
+    property "format money should return number with two decimals" do
+      check all number <- float() do
+        assert Helpers.format_money(number) == number |> Float.round(2)
+      end
+    end
   end
 end

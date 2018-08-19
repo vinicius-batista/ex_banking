@@ -3,23 +3,34 @@ defmodule ExBankingTest do
   Tests for ExBanking
   """
   use ExUnit.Case
+  use ExUnitProperties
   doctest ExBanking
 
   @wrong_argument_error {:error, :wrong_arguments}
 
-  test "create user name that is not a string should return error" do
-    assert ExBanking.create_user(123) == @wrong_argument_error
+  property "create user name should work only with strings" do
+    check all correct_name <- string(:alphanumeric) |> uniq_list_of(min_length: 1),
+              incorrect_name <- integer() do
+      assert ExBanking.create_user(correct_name |> List.to_string()) == :ok
+      assert ExBanking.create_user(incorrect_name) == @wrong_argument_error
+    end
   end
 
-  test "pass wrong arguments to deposit should return error" do
-    assert ExBanking.deposit(123, 123, 123) == @wrong_argument_error
+  property "deposit should verify correct type of arguments" do
+    check all number <- positive_integer() do
+      assert ExBanking.deposit(number, number, number) == @wrong_argument_error
+    end
   end
 
-  test "pass wrong arguments to withdraw should return error" do
-    assert ExBanking.withdraw(123, 123, 123) == @wrong_argument_error
+  property "withdraw should verify correct type of arguments" do
+    check all number <- integer() do
+      assert ExBanking.withdraw(number, number, number) == @wrong_argument_error
+    end
   end
 
-  test "pass wrong arguments to get_balance should return error" do
-    assert ExBanking.get_balance(123, 123) == @wrong_argument_error
+  property "get_balance should verify correct type of arguments" do
+    check all number <- integer() do
+      assert ExBanking.get_balance(number, number) == @wrong_argument_error
+    end
   end
 end
